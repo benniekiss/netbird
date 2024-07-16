@@ -44,7 +44,7 @@ var (
 	defaultSignalSSLDir     string
 	signalCertFile          string
 	signalCertKey           string
-	enableCompatServer		bool
+	enableCompatServer      bool
 
 	signalKaep = grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
 		MinTime:             5 * time.Second,
