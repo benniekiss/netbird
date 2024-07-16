@@ -44,6 +44,7 @@ var (
 	defaultSignalSSLDir     string
 	signalCertFile          string
 	signalCertKey           string
+	enableCompatServer		bool
 
 	signalKaep = grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
 		MinTime:             5 * time.Second,
@@ -168,7 +169,7 @@ var (
 				log.Infof("running gRPC server: %s", grpcListener.Addr().String())
 			}
 
-			if signalPort != 10000 {
+			if enableCompatServer && signalPort != 10000 {
 				// The Signal gRPC server was running on port 10000 previously. Old agents that are already connected to Signal
 				// are using port 10000. For compatibility purposes we keep running a 2nd gRPC server on port 10000.
 				compatListener, err = serveGRPC(grpcServer, 10000)
@@ -365,4 +366,5 @@ func init() {
 	runCmd.Flags().StringVar(&signalLetsencryptDomain, "letsencrypt-domain", "", "a domain to issue Let's Encrypt certificate for. Enables TLS using Let's Encrypt. Will fetch and renew certificate, and run the server with TLS")
 	runCmd.Flags().StringVar(&signalCertFile, "cert-file", "", "Location of your SSL certificate. Can be used when you have an existing certificate and don't want a new certificate be generated automatically. If letsencrypt-domain is specified this property has no effect")
 	runCmd.Flags().StringVar(&signalCertKey, "cert-key", "", "Location of your SSL certificate private key. Can be used when you have an existing certificate and don't want a new certificate be generated automatically. If letsencrypt-domain is specified this property has no effect")
+	runCmd.Flags().BoolVar(&enableCompatServer, "enable-compat-server", false, "Enables a second server which listens on port 10000 for compatability with older, pre-existing clients. If port is set to 10000, this setting has no effect.")
 }
